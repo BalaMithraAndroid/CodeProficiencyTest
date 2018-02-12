@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Listvfactsrows stuff-->
+    <dimen name="lv_row_padding">5dp</dimen>
+    <dimen name="lv_row_text_size">20sp</dimen>
+    <dimen name="lv_description_size">15sp</dimen>
+    <dimen name="lv_row_icon_width">200dp</dimen>
+    <dimen name="lv_row_icon_padding">5dp</dimen>
+    <dimen name="max_height_width">100dp</dimen>
+
+</resources>

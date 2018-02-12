@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Facts</string>
+    <string name="loading">Loading</string>
+    <string name="error">Something went wrong!! Please try again</string>
+    <string name="clicked">Clicked</string>
+    <string name="internet_connection">No Interenet Connection available</string>
+</resources>
