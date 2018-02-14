@@ -2,7 +2,6 @@ package com.example.dellpc.facts.util;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
-import android.net.Network;
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
 import android.os.Build.VERSION;
@@ -16,13 +15,11 @@ public class Networkutils {
     }
 
     public boolean isConnectingToInternet() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) this._context.getSystemService("connectivity");
+        ConnectivityManager connectivityManager = (ConnectivityManager) this._context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (VERSION.SDK_INT >= 21) {
-            for (Network mNetwork : connectivityManager.getAllNetworks()) {
-                if (connectivityManager.getNetworkInfo(mNetwork).getState().equals(State.CONNECTED)) {
-                    return true;
-                }
-            }
+            NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+            return activeNetwork != null
+                    && activeNetwork.isConnectedOrConnecting();
         } else if (connectivityManager != null) {
             NetworkInfo[] info = connectivityManager.getAllNetworkInfo();
             if (info != null) {
