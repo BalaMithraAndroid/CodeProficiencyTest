@@ -15,6 +15,7 @@ import com.example.dellpc.facts.model.FactsResponse;
 import com.example.dellpc.facts.util.Global;
 import com.example.dellpc.facts.util.Networkutils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -39,16 +40,28 @@ public class MainActivity extends AppCompatActivity{
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getFactsFromServer();
+                //Check availability of internet connection on refresh
+                if (!new Networkutils(context).isConnectingToInternet()) {
+                    Global.showToastShort(getApplicationContext(),getResources().getString(R.string.internet_connection));
+                    if(swipeRefreshLayout != null) {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+
+                }
+                else {
+                    getFactsFromServer();
+                }
             }
         });
         swipeRefreshLayout.setColorSchemeResources(new int[]{17170459, 17170452, 17170456, 17170454});
-
+        //Check availability of internet connection on create
         if (!new Networkutils(this).isConnectingToInternet()) {
-            Global.showToastShort(this.context, getResources().getString(R.string.app_name));
+            Global.showToastShort(this.context, getResources().getString(R.string.internet_connection));
         }
-        swipeRefreshLayout.setRefreshing(true);
-        getFactsFromServer();
+        else {
+            swipeRefreshLayout.setRefreshing(true);
+            getFactsFromServer();
+        }
     }
     private void getFactsFromServer()
     {
@@ -61,11 +74,20 @@ public class MainActivity extends AppCompatActivity{
                             }
                             FactsResponse factsResponse = (FactsResponse) response.body();
                             List<FactsList> factsLists=factsResponse.getFactsList();
+                            //Remove row from list if all values are null
+                            List<FactsList> filteredFactsLists = new ArrayList<>();
+                            for(int i=0;i<factsLists.size();i++)
+                            {
+                                if(factsLists.get(i).getTitle()!=null || factsLists.get(i).getDescription()!=null || factsLists.get(i).getImageHref()!=null) {
+                                    filteredFactsLists.add(factsLists.get(i));
+                                }
+
+                            }
                             if(getSupportActionBar()!=null) {
                                 getSupportActionBar().setTitle(factsResponse.getTitle());
                             }
 
-                            FactsAdapter factsAdapter = new FactsAdapter(MainActivity.this,factsLists);
+                            FactsAdapter factsAdapter = new FactsAdapter(MainActivity.this,filteredFactsLists);
                             recyclerView.setLayoutManager(new LinearLayoutManager(context));
                             recyclerView.setHasFixedSize(false);
                             recyclerView.getRecycledViewPool().clear();
